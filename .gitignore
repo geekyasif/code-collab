@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/codecollab-backend/node_modules
+/codecollab-frontend/node_modules
 /.pnp
 .pnp.js
 

@@ -1,0 +1,180 @@
+Step 1 
+	Adding Question To Personal 
+		title/name: Sort an Array
+		platform_url/link: GeeksforGeek
+		type/tag/topic : [Array, Recursion, Selection Sort]
+		description : desc
+		youtube link : url
+		created by : mohdasif.dev
+		personal - {
+				isPersonal: true,
+				status : unsolved
+			   }
+		group_id - null
+		
+		
+		Adding Question To The Specific Group / Question Only Added By Group Creater / Member Admins
+		title/name: Sort an Array
+		platform_url/link: GeeksforGeek
+		type/tag/topic : [Array, Recursion, Selection Sort]
+		description : desc
+		youtube link : url
+		created by : mohdasif.dev
+		personal - {
+				isPersonal: false,
+				status : unsolved
+			   }
+		group_id - 12345678
+			
+			
+			
+			
+
+
+
+Creating Groups
+	Group id : 123456789
+	Group Name : DSA Revolution
+	Create by : Mohdasif.dev@gmail.com
+	members: [
+			{
+				name: mohdasif.dev,
+				isAdmin: true
+			}
+			{
+				name: shabaj,
+				isAdmin: true
+			}
+			{
+				name: prabhat,
+				isAdmin: false
+			}
+		]
+		
+		
+if {
+	i want to add the question in the group and no any group is created by me
+	then i have to create a new group and add members into it
+}
+else{
+	i am in any group so check in which group i am admin or not 
+	if i am admin then i can add the questions
+	else i cannot add the question to it
+}
+
+
+
+Addding member in the Group
+	fetch the group that is created by me
+	add the member with username/email and by default the isAdmin is false later we can change the isAdmin if we want to create the admin so he can add the member too
+	
+Fetch the group in which i am the member, if i am also the member of that group i can add the members too
+
+
+
+Step 2
+	Fetching the Personal Question that is created by me and personal status true
+
+Step 3
+	Fetching the Groups that is created by me or which i am the member of
+	
+	
+
+=============================================================================================================
+1 Adding Question For Personal
+	id : 1,
+	title : Two_Sum,
+	url: www.example.com,
+	platform: geeksforgeek,
+	topic/tags: [Array, LinkedList, Recursion]
+	description: this is the description
+	solution_link: www.youtube.com
+	created_by : mohdasif.dev
+	personal: {
+	 		is_personal : true
+	 		status: unsolved
+		  }
+	group_id/name: null
+	
+	
+
+2 Adding Question to the Groups
+	id : 1,
+	title : Two_Sum,
+	url: www.example.com,
+	platform: geeksforgeek,
+	topic/tags: [Array, LinkedList, Recursion]
+	description: this is the description
+	solution_link: www.youtube.com
+	created_by : mohdasif.dev
+	personal: {
+	 		is_personal : false
+	 		status: unsolved
+		  }
+	group_id/name: 12345/Dsa_Revolution_2023
+
+
+
+
+
+
+
+const groups = {
+	id: 1,
+	name: Dsa_Revolution_2023,
+	created_by: mohdasif.dev
+}
+
+const question = {
+	id: 1,
+	title: "two sum"
+	group_id: 1,
+	created_by: asif
+	desc : "lovebnabar"
+	url: "link"
+}
+
+const member = [
+	{
+	id: 1
+	name: asif
+	group_id: 1
+	question: 1
+	status: unsolved
+	},
+	{
+	id: 2
+	name: asif
+	group_id: 1
+	question: 2
+	status: unsolved
+	}
+]
+
+
+===================================================
+User Table
+	user_id
+	user_username
+	user_fullname
+	user_email
+
+Group Table
+	group_id
+	group_name
+	group_created_by 
+
+Group Member
+	member_id
+	 group_id
+	 user_id
+	 isAdmin
+
+Question Table
+	question_id
+	question_title
+	question_type: personal/group
+	personal : user_id / null
+	group: group_id / null
+	created_by: user_id
+	

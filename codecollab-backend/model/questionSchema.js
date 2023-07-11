@@ -1,11 +1,11 @@
 const mongoose = require("mongoose")
 
 const questionSchema = new mongoose.Schema({
-    name:{
+    title:{
         type: String,
         require: true
     },
-    question_link: {
+    problem_link: {
         type: String
     },
     tutorial_link: {
@@ -15,23 +15,20 @@ const questionSchema = new mongoose.Schema({
         type: String
     },
     tags:{
-       name: [string]
+       type: String
     },
     platform:{
         type: String
     },
-    isPersonal: {
-        type: Boolean
-    },
-    isGroup:{
-        type: Boolean
-    },
-    group_id:{
-        type: String,
+    type: {
+        is_personal : String,
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'type.is_personal'
+        }
     },
     is_solved: {
-        type: Boolean,
-        default: false
+        type: String,
     },
     description: {
         type: String

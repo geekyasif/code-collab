@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const groupMemberSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
     },
     group_id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -11,7 +11,7 @@ const groupMemberSchema = new mongoose.Schema({
     },
     added_by: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
     }
 },{timestamps: true})
 

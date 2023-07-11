@@ -11,10 +11,10 @@ interface IQuestionInputFormParams {
 function QuestionInputForm({label, type, name, value, onChange}: IQuestionInputFormParams) {
   return (
     <div>
-        <label>{label}</label>
+        <label className='font-bold'>{label}</label>
         <br/>
         <input
-          className="mr-2 border p-2 w-[300px]"
+          className="mr-2 border p-2 w-[500px]"
           type={type}
           name={name}
           value={value}

@@ -1,7 +1,8 @@
 const Group = require("../../model/groupSchema");
 
 const createGroupsController = async (req, res) => {
-  const { name, description, created_by } = req.body;
+  try{
+    const { name, description, created_by } = req.body;
 
   const existing_group = await Group.findOne({ name, created_by });
   if (existing_group) {
@@ -17,6 +18,9 @@ const createGroupsController = async (req, res) => {
   const new_group = await group.save()
 
   return res.json({ data: new_group });
+  }catch(err){
+    return res.json({ data: err });
+  }
 };
 
 module.exports = createGroupsController;

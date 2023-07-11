@@ -77,7 +77,7 @@ function AddGroup() {
         ></textarea>
 
         <button className="bg-blue-500 p-2 rounded text-white" type="submit">
-          Create Group
+          Create New Group
         </button>
       </form>
     </div>

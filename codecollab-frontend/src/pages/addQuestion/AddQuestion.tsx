@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import { useAppSelector } from "../../hooks/hooks";
 import axios from "../../axios/axios";
 import QuestionInputForm from "../../components/questionForm/QuestionInputForm";
@@ -42,131 +42,73 @@ const mentor_name: string[] = [
   "Other",
 ];
 
-// const groups = [
-//   {
-//     id: 1,
-//     name: "Dsa_Revolution_2023",
-//     created_by: "mohdasif.dev",
-//     members: [
-//       {
-//         name: "shabaj",
-//         status: "unsolved",
-//         isAdmin: false,
-//       },
-//       {
-//         name: "nazim",
-//         status: "unsolved",
-//         isAdmin: false,
-//       },
-//       {
-//         name: "prabhat",
-//         status: "unsolved",
-//         isAdmin: true,
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     name: "Algo_Masters_2023",
-//     created_by: "john_dev",
-//     members: [
-//       {
-//         name: "mohdasif.dev",
-//         status: "unsolved",
-//         isAdmin: true,
-//       },
-
-//       {
-//         name: "john_dev",
-//         status: "unsolved",
-//         isAdmin: true,
-//       },
-//       {
-//         name: "emma",
-//         status: "unsolved",
-//         isAdmin: false,
-//       },
-//       {
-//         name: "peter",
-//         status: "unsolved",
-//         isAdmin: false,
-//       },
-//       {
-//         name: "sara",
-//         status: "unsolved",
-//         isAdmin: true,
-//       },
-//     ],
-//   },
-//   {
-//     id: 3,
-//     name: "Coding_Gurus",
-//     created_by: "alex_dev",
-//     members: [
-//       {
-//         name: "alex_dev",
-//         status: "unsolved",
-//         isAdmin: true,
-//       },
-//       {
-//         name: "lisa",
-//         status: "unsolved",
-//         isAdmin: false,
-//       },
-//       {
-//         name: "ryan",
-//         status: "unsolved",
-//         isAdmin: false,
-//       },
-//       {
-//         name: "michael",
-//         status: "unsolved",
-//         isAdmin: true,
-//       },
-//     ],
-//   },
-// ];
+interface IGroup {
+  _id: string;
+  name: string;
+}
 
 function AddQuestion() {
   const { user, authToken } = useAppSelector((state) => state.auth);
+  const [groups, setGroups] = useState<IGroup[]>([]);
   const [question, setQuestion] = useState({
     title: "",
-    url: "",
-    youtube_link: "",
-    mentorName: "",
+    problem_link: "",
+    tutorial_link: "",
+    mentor_name: "",
     platform: "",
-    isPersonal: "",
+    tags: "",
     description: "",
-    isSolved: "",
-    group: "",
+    is_solved: "",
+    type: {
+      is_personal: "",
+      id: "",
+    },
+    created_by: user._id,
   });
 
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [groups, setGroups] = useState<
-    {
-      _id: number;
-      name: string;
-    }[]
-  >([]);
+  const [isPersonal, setIsPersonal] = useState("");
+  const [isGroup, setIsGroup] = useState("");
+
+  const handleInputChangeIsPersonal = (e: ChangeEvent<HTMLSelectElement>) => {
+    setIsPersonal(e.target.value);
+  };
+
+  const handleInputChangeIsGroup = (e: ChangeEvent<HTMLSelectElement>) => {
+    setIsGroup(e.target.value);
+  };
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
     setQuestion((prevFormData) => ({
       ...prevFormData,
       [name]: value,
-      tags: selectedTags,
     }));
   };
 
-  const handleSelectedTags = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(event.target.selectedOptions).map(
-      (option) => option.value
-    );
-    setSelectedTags(selectedOptions);
-  };
-
-  const handleAddQuestion = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddQuestion = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    try {
+      let questionData = question;
+
+      if (isPersonal === "User") {
+        questionData.type.is_personal = "User";
+        questionData.type.id = user._id;
+      } else {
+        questionData.type.is_personal = "Group";
+        questionData.type.id = isGroup;
+      }
+
+      const res = await axios.post("http://localhost:8000/questions", questionData, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      console.log(res.data.data)
+
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const fetchGroup = async () => {
@@ -188,8 +130,8 @@ function AddQuestion() {
   });
 
   return (
-    <div className="container mx-auto flex justify-center">
-      <form onSubmit={handleAddQuestion} className="border p-2 ">
+    <div className="container mx-auto flex justify-center my-4">
+      <form onSubmit={handleAddQuestion} className="border p-2 rounded">
         <div className="flex flex-row">
           <QuestionInputForm
             label="Problem Title"
@@ -202,27 +144,27 @@ function AddQuestion() {
           <QuestionInputForm
             label="Problem Link"
             type="text"
-            name="url"
-            value={question.url}
+            name="problem_link"
+            value={question.problem_link}
             onChange={handleInputChange}
           />
         </div>
 
-        <div className="flex flex-row my-2">
+        <div className="flex flex-row my-4">
           <QuestionInputForm
             label="Problem Tutorial Link"
             type="text"
-            name="youtube_link"
-            value={question.youtube_link}
+            name="tutorial_link"
+            value={question.tutorial_link}
             onChange={handleInputChange}
           />
           <div>
-            <label>Mentor Name</label>
+            <label className="font-bold">Mentor Name</label>
             <br />
             <select
-              className="w-[300px] py-2 rounded bg-white border"
-              value={question.mentorName}
-              name="mentorName"
+              className="w-[500px] py-2 rounded bg-white border"
+              value={question.mentor_name}
+              name="mentor_name"
               onChange={handleInputChange}
             >
               <option value="">Select</option>
@@ -238,15 +180,15 @@ function AddQuestion() {
           </div>
         </div>
 
-        <div className="flex flex-row my-2">
+        <div className="flex flex-row my-4">
           <div>
-            <label>Tags</label>
+            <label className="font-bold">Tags</label>
             <br />
             <select
-              className="w-[300px] py-2 rounded bg-white border"
-              value={selectedTags}
-              onChange={handleSelectedTags}
-              multiple
+              className="w-[500px] py-2 rounded bg-white border mr-2"
+              value={question.tags}
+              name="tags"
+              onChange={handleInputChange}
             >
               {tags.map((tag, id) => (
                 <option
@@ -260,10 +202,10 @@ function AddQuestion() {
           </div>
 
           <div>
-            <label>Platform</label>
+            <label className="font-bold">Platform</label>
             <br />
             <select
-              className="w-[300px] py-2 rounded bg-white border"
+              className="w-[500px] py-2 rounded bg-white border"
               value={question.platform}
               name="platform"
               onChange={handleInputChange}
@@ -281,45 +223,14 @@ function AddQuestion() {
           </div>
         </div>
 
-        <div className="flex flex-row my-4">
-          <div className="flex flex-col">
-            <label>Add Question Into Personal/Group</label>
+        <div className="my-4">
+          <div className="my-4">
+            <label className="font-bold">Problem Status</label>
             <br />
             <select
-              className="w-[300px] py-2 rounded bg-white border"
-              value={question.isPersonal}
-              name="isPersonal"
-              onChange={handleInputChange}
-            >
-              <option value="">Select</option>
-              <option value="personal">Personal</option>
-              <option value="group">Group</option>
-            </select>
-
-            {question.isPersonal === "group" ? (
-              <select
-                className="w-[300px] py-2 rounded bg-white border my-2"
-                value={question.group}
-                name="group"
-                onChange={handleInputChange}
-              >
-                <option value="">Select Group</option>
-                {groups?.map((group, _id) => (
-                  <option key={_id} value={group?.name}>
-                    {group?.name}
-                  </option>
-                ))}
-              </select>
-            ) : null}
-          </div>
-
-          <div>
-            <label>Problem Status</label>
-            <br />
-            <select
-              className="w-[300px] py-2 rounded bg-white border"
-              value={question.isSolved}
-              name="isSolved"
+              className="w-[100%] py-2 rounded bg-white border"
+              value={question.is_solved}
+              name="is_solved"
               onChange={handleInputChange}
             >
               <option value="">Select</option>
@@ -328,9 +239,41 @@ function AddQuestion() {
             </select>
             <br />
           </div>
+
+          <div className="flex flex-col">
+            <label className="mb-2 font-bold">
+              Add Question Into Personal/Group
+            </label>
+            <select
+              className="w-[100%] py-2 rounded bg-white border"
+              value={isPersonal}
+              name="isPersonal"
+              onChange={handleInputChangeIsPersonal}
+            >
+              <option value="">Select</option>
+              <option value="User">Personal</option>
+              <option value="Group">Group</option>
+            </select>
+
+            {isPersonal === "Group" && (
+              <select
+                className="w-[100%] py-2 rounded bg-white border my-2"
+                value={isGroup}
+                name="isGroup"
+                onChange={handleInputChangeIsGroup}
+              >
+                <option value="">Select Group</option>
+                {groups?.map((group) => (
+                  <option key={group._id} value={group?._id}>
+                    {group?.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
         </div>
 
-        <label>Description</label>
+        <label className="font-bold">Description</label>
         <br />
         <textarea
           className="border p-2 w-full"

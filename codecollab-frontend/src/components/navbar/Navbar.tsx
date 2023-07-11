@@ -6,7 +6,7 @@ import { removeAuthtoken } from '../../features/auth/AuthSlice'
 
 function Navbar() {
   const dispatch = useAppDispatch()
-  const { authToken } = useAppSelector(state => state.auth)
+  const { authToken, user } = useAppSelector(state => state.auth)
   return (
     <nav className='border py-2'>
       <div className='flex flex-row container mx-auto py-2 justify-between'>
@@ -19,7 +19,7 @@ function Navbar() {
               <Link className='border p-2 mr-2' to="/dashboard">Dashboard</Link>
               <Link className='border p-2 mr-2' to="/dashboard/add-question">Add Question</Link>
               <Link className='border p-2 mr-2' to="/dashboard/groups">Groups</Link>
-              <button className='border p-2 mr-2' onClick={ () => dispatch(removeAuthtoken())}>Logout</button>
+              <button className='border p-2 mr-2' onClick={ () => dispatch(removeAuthtoken())}>{user.username} {" -> "}  Logout</button>
             </>
               : <>
                 <Link className='border p-2 mr-2' to="/register">Register</Link>

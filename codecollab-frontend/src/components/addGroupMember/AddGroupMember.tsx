@@ -25,8 +25,11 @@ interface IGroupMember {
   _id: string;
 }
 
-function AddGroupMember() {
-  const { groupId } = useParams();
+interface IGroupDetailsProps {
+  groupId: string | undefined;
+}
+function AddGroupMember({ groupId }: IGroupDetailsProps) {
+  // const { groupId } = useParams();
   const { user, authToken } = useAppSelector((state) => state.auth);
   const [members, setMembers] = useState<IMembers[]>([]);
   const [groupMembers, setGroupMembers] = useState<IGroupMember[]>([]);
@@ -60,8 +63,10 @@ function AddGroupMember() {
 
   useEffect(() => {
     fetchMembers();
-    fetchGroupMembers();
-  }, []);
+    if (groupId !== undefined) {
+      fetchGroupMembers();
+    }
+  }, [groupId]);
 
   const handleAddToMember = async (event: any) => {
     event.preventDefault();
@@ -84,28 +89,42 @@ function AddGroupMember() {
   };
 
   return (
-    <div className="border p-2">
-      <form onSubmit={handleAddToMember}>
-        <label>Select Member</label>
-        <br />
-        <select
-          name="member"
-          value={selectedMember}
-          onChange={(e) => setSelectedMember(e.target.value)}
-        >
-          {members.map((member) => (
-            <option value={member._id} key={member._id}>
-              {member.username}
-            </option>
-          ))}
-        </select>
-        <br />
-        <button>Add Member</button>
+    <div className="p-2 my-2">
+      <form onSubmit={handleAddToMember} className="border p-2">
+        <label className="pl-4">Select Member</label>
+        <div className="flex flex-row items-center justify-around">
+          <div className="p-2 w-[90%]">
+            <select
+              className="p-2 w-[100%] mt-2 cursor-pointer"
+              name="member"
+              value={selectedMember}
+              onChange={(e) => setSelectedMember(e.target.value)}
+            >
+              {members.map((member) => (
+                <option
+                  value={member._id}
+                  key={member._id}
+                  className="bg-white my-2 py-4 cursor-pointer"
+                >
+                  {member.username}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <button className="bg-blue-500 rounded text-white ml-2 text-sm p-2">
+              Add Member
+            </button>
+          </div>
+        </div>
       </form>
 
-      <p>All group Members are</p>
-      {groupMembers.map((member) => (
-        <p>{member.user_id.username}</p>
+      <p className="font-bold mt-4 border-t pt-2">All group Members are</p>
+      {groupMembers.map((member, i) => (
+        <p>
+          {i + 1}. {member.user_id.username}
+        </p>
       ))}
     </div>
   );

@@ -37,8 +37,7 @@ const addQuestion = async (req, res) => {
         question_id: question._id,
         group_id: groupId,
         group_members: group_members_ids.map((memberId) => ({
-          user: memberId,
-          status: "unsolved",
+          user_id: memberId,
         })),
       });
     

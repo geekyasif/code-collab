@@ -11,8 +11,6 @@ interface IGroupDetailsProps {
   groupId: string | undefined;
 }
 
-
-
 interface QuestionAssignment {
   createdAt: string;
   group_id: string;
@@ -27,6 +25,19 @@ interface QuestionAssignment {
 
 interface GroupMember {
   status: string;
+  _id: string;
+  user_id: User;
+}
+
+interface User {
+  createdAt: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  password: string;
+  updatedAt: string;
+  username: string;
+  __v: number;
   _id: string;
 }
 
@@ -50,12 +61,11 @@ interface Question {
   _id: string;
 }
 
-
-
 function GroupDetails({ groupId }: IGroupDetailsProps) {
   const { authToken, user } = useAppSelector((state) => state.auth);
   const [myGroupDetails, setMyGroupDetails] = useState<IGroup>();
-  const [questionsByGroup, setQuestionsByGroup] = useState<QuestionAssignment[]>();
+  const [questionsByGroup, setQuestionsByGroup] =
+    useState<QuestionAssignment[]>([]);
   const [tab, setTab] = useState("question");
 
   const fetchGroupDetails = async () => {
@@ -69,16 +79,14 @@ function GroupDetails({ groupId }: IGroupDetailsProps) {
         }
       );
       console.log("this is group details", res.data.data);
-      // setMyGroupDetails(res.data.data);
+      setMyGroupDetails(res.data.data);
     } catch (err) {
       console.log(err);
     }
   };
 
-
   const fetchQuestionByGroup = async () => {
-    try{
-
+    try {
       const res = await axios.get(
         `http://localhost:8000/question-assignment/${groupId}`,
         {
@@ -87,21 +95,17 @@ function GroupDetails({ groupId }: IGroupDetailsProps) {
           },
         }
       );
+        setQuestionsByGroup(res.data.data);
 
-      setQuestionsByGroup(res.data.data)
-
-
-    }catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
-
-        console.log("question assignemnts", questionsByGroup);
+  };
 
   useEffect(() => {
     if (groupId !== undefined) {
       fetchGroupDetails();
-      fetchQuestionByGroup()
+      fetchQuestionByGroup();
     }
   }, [groupId]);
 
@@ -150,12 +154,34 @@ function GroupDetails({ groupId }: IGroupDetailsProps) {
       {tab === "question" ? (
         <div className="border-t mt-4 pt-2">
           {
-            // questionsByGroup?.map((q) => (
-            //   <>
-            //     <p>{q.question_id.title}</p>
-            //   </>
-            // ))
+            questionsByGroup.length === 0 &&  <div>No questions added yet !</div>
           }
+          {questionsByGroup?.length !== 0 && questionsByGroup?.map((q) => (
+            <div key={q._id} className="my-2 p-2 rounded shadow-md">
+              <p className="text-center font-bold text-xl">
+                {q.question_id.title}
+              </p>
+              <div>
+                <p className="border-b mb-2 font-semibold">Users status</p>
+                <div className="flex flex-row">
+                  {q.group_members.map((m) => (
+                    <p className="mr-4">
+                      {m.user_id.username}{" "}
+                      <span
+                        className={`${
+                          m.status === "solved"
+                            ? "bg-green-500 ounded border p-1 text-xs text-white"
+                            : "rounded border p-1 text-xs text-white bg-red-500"
+                        }`}
+                      >
+                        {m.status}
+                      </span>
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <AddGroupMember groupId={groupId} />

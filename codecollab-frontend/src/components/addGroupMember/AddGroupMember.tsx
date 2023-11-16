@@ -122,7 +122,7 @@ function AddGroupMember({ groupId }: IGroupDetailsProps) {
 
       <p className="font-bold mt-4 border-t pt-2">All group Members are</p>
       {groupMembers.map((member, i) => (
-        <p>
+        <p key={member._id}>
           {i + 1}. {member.user_id.username}
         </p>
       ))}
